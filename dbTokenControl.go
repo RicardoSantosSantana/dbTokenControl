@@ -6,10 +6,10 @@ import (
 	"os"
 )
 
-var sconn StringConnection
+var StringConnection STRConn
 
 func stringConnection() string {
-	sConnection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", sconn.DbUser, sconn.DbPassword, sconn.DbHost, sconn.DbPort, sconn.DbName)
+	sConnection := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", StringConnection.DbUser, StringConnection.DbPassword, StringConnection.DbHost, StringConnection.DbPort, StringConnection.DbName)
 	return sConnection
 }
 

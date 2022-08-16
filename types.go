@@ -8,7 +8,7 @@ type TokenResponse struct {
 	User_id       int    `json:"user_id"`
 	Refresh_token string `json:"refresh_token"`
 }
-type StringConnection struct {
+type STRConn struct {
 	DbName     string
 	DbHost     string
 	DbUser     string
