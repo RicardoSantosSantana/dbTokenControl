@@ -1,6 +1,6 @@
 package dbTokenControl
 
-type TokenResponse struct {
+type Token struct {
 	Access_token  string `json:"access_token"`
 	Token_type    string `json:"token_type"`
 	Expires_in    int    `json:"expires_in"`
@@ -9,9 +9,9 @@ type TokenResponse struct {
 	Refresh_token string `json:"refresh_token"`
 }
 type STRConn struct {
-	DbName     string
-	DbHost     string
-	DbUser     string
-	DbPassword string
-	DbPort     string
+	DbName     string `json:"dbname"`
+	DbHost     string `json:"dbhost"`
+	DbUser     string `json:"dbuser"`
+	DbPassword string `json:"dbpassword"`
+	DbPort     string `json:"dbport"`
 }
