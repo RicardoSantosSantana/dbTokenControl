@@ -111,3 +111,65 @@ func stringConnection() string {
 
 	return sConnection
 }
+
+func TruncateAllItems() error {
+
+	db, errConn := openConnection()
+	if errConn != nil {
+		return errConn
+	}
+
+	stmt, err := db.Prepare("TRUNCATE TABLE product")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	stmt.Exec()
+
+	defer db.Close()
+
+	return nil
+
+}
+
+func Save(item Items) error {
+
+	db, errConn := openConnection()
+	if errConn != nil {
+		return errConn
+	}
+
+	stmt, err := db.Prepare("INSERT INTO product(id, title, subtitle, price, base_price, original_price, permalink, thumbnail, pictures,description) values(?,?,?,?,?,?,?,?,?,?)")
+	if err != nil {
+		return err
+	}
+
+	// sqlv := fmt.Sprintf("INSERT INTO product(id, title, subtitle, price, base_price, original_price, permalink, thumbnail, pictures,description) values('%s','%s','%s',%f,%f,%f,'%s','%s','%s','%s')", item.Id,
+	// 	item.Title,
+	// 	item.Subtitle,
+	// 	item.Price,
+	// 	item.Base_price,
+	// 	item.Original_price,
+	// 	item.Permalink,
+	// 	item.Thumbnail,
+	// 	item.Pictures,
+	// 	item.Description)
+
+	// fmt.Println(sqlv)
+
+	stmt.Exec(
+		item.Id,
+		item.Title,
+		item.Subtitle,
+		item.Price,
+		item.Base_price,
+		item.Original_price,
+		item.Permalink,
+		item.Thumbnail,
+		item.Pictures,
+		item.Description)
+
+	defer db.Close()
+
+	return nil
+}
