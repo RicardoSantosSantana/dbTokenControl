@@ -48,7 +48,7 @@ func (token Token) Add() error {
 		return err
 	}
 
-	stmt, err := db.Prepare("INSERT INTO config_token(access_token, token_type, expires_in, scope, user_id, refresh_token) values(?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO tokens(access_token, token_type, expires_in, scope, user_id, refresh_token) values(?,?,?,?,?,?)")
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func Active() (Token, error) {
 	}
 
 	token := Token{}
-	sql := "SELECT access_token, token_type, expires_in, scope, user_id, refresh_token FROM config_token ORDER BY id DESC LIMIT 1"
+	sql := "SELECT access_token, token_type, expires_in, scope, user_id, refresh_token FROM tokens ORDER BY id DESC LIMIT 1"
 	err = db.QueryRow(sql).Scan(&token.Access_token, &token.Token_type, &token.Expires_in, &token.Scope, &token.User_id, &token.Refresh_token)
 
 	if err != nil {
@@ -119,7 +119,7 @@ func TruncateAllItems() error {
 		return errConn
 	}
 
-	stmt, err := db.Prepare("TRUNCATE TABLE product")
+	stmt, err := db.Prepare("TRUNCATE TABLE products")
 	if err != nil {
 		fmt.Println(err.Error())
 	}
@@ -139,23 +139,10 @@ func Save(item Items) error {
 		return errConn
 	}
 
-	stmt, err := db.Prepare("INSERT INTO product(id, title, subtitle, price, base_price, original_price, permalink, thumbnail, pictures,description) values(?,?,?,?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare("INSERT INTO products(id, title, subtitle, price, base_price, original_price, permalink, thumbnail, pictures,description) values(?,?,?,?,?,?,?,?,?,?)")
 	if err != nil {
 		return err
 	}
-
-	// sqlv := fmt.Sprintf("INSERT INTO product(id, title, subtitle, price, base_price, original_price, permalink, thumbnail, pictures,description) values('%s','%s','%s',%f,%f,%f,'%s','%s','%s','%s')", item.Id,
-	// 	item.Title,
-	// 	item.Subtitle,
-	// 	item.Price,
-	// 	item.Base_price,
-	// 	item.Original_price,
-	// 	item.Permalink,
-	// 	item.Thumbnail,
-	// 	item.Pictures,
-	// 	item.Description)
-
-	// fmt.Println(sqlv)
 
 	stmt.Exec(
 		item.Id,
