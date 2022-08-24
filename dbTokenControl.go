@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"os"
+	"reflect"
+	"strings"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -132,6 +134,28 @@ func TruncateAllItems() error {
 
 }
 
+func MakeSelectStatement(table string) string {
+
+	item := reflect.TypeOf(Items{})
+
+	names := make([]string, item.NumField())
+	ids := make([]string, item.NumField())
+
+	for i := range names {
+		name := strings.ToLower(item.Field(i).Name)
+
+		if strings.Contains("status", name) || strings.Contains("condition", name) {
+			names[i] = "`" + name + "`"
+		} else {
+			names[i] = name
+		}
+		ids[i] = "?"
+
+	}
+
+	return "insert into " + table + " (" + strings.Join(names, ", ") + ") values (" + strings.Join(ids, ",") + ")"
+
+}
 func Save(item Items) error {
 
 	db, errConn := openConnection()
@@ -139,20 +163,41 @@ func Save(item Items) error {
 		return errConn
 	}
 
-	stmt, err := db.Prepare("INSERT INTO products(id, title, subtitle, price, base_price, original_price, permalink, thumbnail, pictures,description) values(?,?,?,?,?,?,?,?,?,?)")
+	stmt, err := db.Prepare(MakeSelectStatement("products"))
 	if err != nil {
 		return err
 	}
 
 	stmt.Exec(
 		item.Id,
+		item.Site_id,
 		item.Title,
 		item.Subtitle,
+		item.Seller_id,
+		item.Category_id,
+		item.Official_store_id,
 		item.Price,
 		item.Base_price,
 		item.Original_price,
+		item.Currency_id,
+		item.Initial_quantity,
+		item.Available_quantity,
+		item.Sold_quantity,
+		item.Sale_terms,
+		item.Buying_mode,
+		item.Listing_type_id,
+		item.Start_time,
+		item.Stop_time,
+		item.Condition,
 		item.Permalink,
+		item.Thumbnail_id,
 		item.Thumbnail,
+		item.Secure_thumbnail,
+		item.Status,
+		item.Warranty,
+		item.Catalog_product_id,
+		item.Domain_id,
+		item.Health,
 		item.Pictures,
 		item.Description)
 
