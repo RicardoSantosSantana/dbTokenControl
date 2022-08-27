@@ -6,6 +6,7 @@ import (
 	"os"
 	"reflect"
 	"strings"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -95,8 +96,14 @@ func openConnection() (*sql.DB, error) {
 
 	if errPing != nil {
 		fmt.Println("database connection failed > " + strConn)
-		db.Close()
-		os.Exit(3)
+		time.Sleep(10 * time.Second)
+		errPing2 := db.Ping()
+		if errPing2 != nil {
+			db.Close()
+			os.Exit(3)
+			return nil, err			
+		}
+		
 	}
 
 	return db, err
