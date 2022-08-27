@@ -89,20 +89,40 @@ func openConnection() (*sql.DB, error) {
 
 	db, err := sql.Open("mysql", strConn)
 	if err != nil {
-		return nil, err
+		fmt.Println(strConn)
 	}
 
 	errPing := db.Ping()
 
 	if errPing != nil {
-		fmt.Println("database connection failed > " + strConn)
-		time.Sleep(10 * time.Second)
-		errPing2 := db.Ping()
-		if errPing2 != nil {
-			db.Close()
-			os.Exit(3)
-			return nil, err			
+		fmt.Println("database connection failed, trying new connection.")
+		fmt.Println(strConn)
+
+		var i int = 5		
+				
+		for {
+
+			log:=fmt.Sprintf("connection %d of %d",i,5)
+			fmt.Println(log)
+
+			time.Sleep(10 * time.Second)
+			i--;
+			errPing2 := db.Ping()
+	
+			if errPing2 == nil {
+				return db, nil 
+			}
+
+			if i==0 {				
+				db.Close()				
+				defer os.Exit(3)
+				return nil, err				
+			}
+
 		}
+		
+		
+
 		
 	}
 
